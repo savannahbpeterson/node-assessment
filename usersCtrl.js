@@ -51,10 +51,10 @@ module.exports = {
     updateUser: (req, res) => {
         //decided to just rewrite the whole thing for simplicity sake
 
-        let updateUser = userData.findIndex(user => user.id == req.params.id);
-        userData.splice(updateUser, 1, req.body);
-        res.status(200).send(user);
-
+        let updateUserIndex = userData.findIndex(user => user.id == req.params.userId);
+        let updatedUser = { ...userData[updateUserIndex], ...req.body }
+        userData.splice(updateUserIndex, 1, updatedUser);
+        res.status(200).send(userData);
     },
 
     newUser: (req, res) => {
