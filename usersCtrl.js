@@ -13,6 +13,7 @@ module.exports = {
             res.status(200).send(emailData)
 
         } else if (favorites) {
+            // includes returns a boolean, so it would be better to just use the implicit return using .includes
             let favoritesData = userData.filter(user => { if (user.favorites.includes(favorites)) { return user } })
             res.status(200).send(favoritesData)
 
@@ -31,6 +32,7 @@ module.exports = {
         }
     },
     getAdmin: (req, res) => {
+        //                                  parenthesis here is not technically needed but does not cause an issue
         let data = userData.filter(user => (user.type === 'admin'))
         res.status(200).send(data)
     },
@@ -52,6 +54,7 @@ module.exports = {
 
         for (let i = 0; i < userData.length; i++) {
             if (userData[i].id === +userId) {
+                // using the spread operator can turn this into just one line
                 userData[i].first_name = req.body.first_name
                 userData[i].last_name = req.body.last_name
                 userData[i].email = req.body.email
@@ -76,6 +79,7 @@ module.exports = {
     },
 
     delete: (req, res) => {
+        // this is not a good idea, as you will only remove the correct while the id's match the index by one. you should rewrite this to not rely on the index being 1 off from the id.
         let remove = userData.splice(req.params.id - 1, 1)
         res.status(200).send(userData)
     }
