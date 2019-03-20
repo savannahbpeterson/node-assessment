@@ -14,7 +14,7 @@ module.exports = {
 
         } else if (favorites) {
             // includes returns a boolean, so it would be better to just use the implicit return using .includes
-            let favoritesData = userData.filter(user => { if (user.favorites.includes(favorites)) { return user } })
+            let favoritesData = userData.filter(user => user.favorites.includes(favorites))
             res.status(200).send(favoritesData)
 
         } else {
@@ -33,40 +33,27 @@ module.exports = {
     },
     getAdmin: (req, res) => {
         //                                  parenthesis here is not technically needed but does not cause an issue
-        let data = userData.filter(user => (user.type === 'admin'))
+        let data = userData.filter(user => user.type === 'admin')
         res.status(200).send(data)
     },
 
     nonAdmin: (req, res) => {
-        let data = userData.filter(user => (user.type !== 'admin'))
+        let data = userData.filter(user => user.type !== 'admin')
         res.status(200).send(data)
     },
 
     type: (req, res) => {
         let { type } = req.params
-        let data = userData.filter(user => (user.type == type))
+        let data = userData.filter(user => user.type == type)
         res.status(200).send(data)
     },
 
     updateUser: (req, res) => {
-    
-        const { userId } = req.params;
+        //decided to just rewrite the whole thing for simplicity sake
 
-        for (let i = 0; i < userData.length; i++) {
-            if (userData[i].id === +userId) {
-                // using the spread operator can turn this into just one line
-                userData[i].first_name = req.body.first_name
-                userData[i].last_name = req.body.last_name
-                userData[i].email = req.body.email
-                userData[i].gender = req.body.gender
-                userData[i].language = req.body.language
-                userData[i].age = req.body.age
-                userData[i].city = req.body.city
-                userData[i].state = req.body.state
-                userData[i].type = req.body.type
-                userData[i].favorites = req.body.favorites
-            }
-        } res.status(200).send(userData)
+        let updateUser = userData.findIndex(user => user.id == req.params.id);
+        userData.splice(updateUser, 1, req.body);
+        res.status(200).send(user);
 
     },
 
@@ -79,8 +66,13 @@ module.exports = {
     },
 
     delete: (req, res) => {
-        // this is not a good idea, as you will only remove the correct while the id's match the index by one. you should rewrite this to not rely on the index being 1 off from the id.
-        let remove = userData.splice(req.params.id - 1, 1)
+        // this is not a good idea, as you will only remove the correct while the id's match the index by one.
+        // you should rewrite this to not rely on the index being 1 off from the id.
+
+        let removedUser = userData.findIndex(user => user.id == req.params.id)
+        userData.splice(removedUser, 1)
+        console.log(removedUser)
+
         res.status(200).send(userData)
     }
 }
